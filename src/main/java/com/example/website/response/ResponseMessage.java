@@ -5,11 +5,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.time.LocalDate;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class LoginMessage {
+public class ResponseMessage {
     String message;
-    Boolean status;
+    String action;
+    boolean status;
+
+    public ResponseMessage(int userName) {
+    }
 }
