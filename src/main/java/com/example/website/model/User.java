@@ -1,4 +1,4 @@
-package com.example.website.entity;
+package com.example.website.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,18 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private UUID id;
     private String username;
     private String password;
 }
