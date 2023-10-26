@@ -82,17 +82,19 @@ public class WalletService {
         LocalDate lastWithdrawDate = user.getWallet().getLastWithdraw();
         LocalDate dateNow = LocalDate.parse("2023-10-31");
 
-        Long daysBetween = ChronoUnit.DAYS.between(lastWithdrawDate, dateNow);
+        if(lastWithdrawDate != null){
+            Long daysBetween = ChronoUnit.DAYS.between(lastWithdrawDate, dateNow);
+
+            if (daysBetween < 30){
+                return new ResponseMessage("Withdraw Unsuccessful. There are "+ (30 - daysBetween ) + " days before you can Withdraw again", "Withdraw", false);
+            };
+        }
 
         int comparison =  user.getWallet().getBalance().compareTo(withdrawalBody.getWithdrawalAmount());
 
         if (comparison == -1) {
             return new ResponseMessage("Withdraw Unsuccessful. Insufficient Balance", "Withdraw", false);
         }
-
-        if (daysBetween < 30){
-            return new ResponseMessage("Withdraw Unsuccessful. There are "+ (30 - daysBetween ) + " days before you can Withdraw again", "Withdraw", false);
-        };
 
         Wallet wallet = findWalletById(user.getWallet().getId());
         wallet.setBalance(wallet.getBalance().subtract(withdrawalBody.getWithdrawalAmount()));

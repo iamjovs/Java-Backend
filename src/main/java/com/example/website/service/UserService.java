@@ -1,5 +1,6 @@
 package com.example.website.service;
 
+import com.example.website.model.Player;
 import com.example.website.model.User;
 import com.example.website.model.Wallet;
 import com.example.website.repository.UserRepository;
@@ -12,23 +13,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @Slf4j
 public class UserService {
-
-
     private final UserRepository userRepository;
-
-    @Autowired
     private final WalletService walletService;
-
+    private final PlayerService playerService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, WalletService walletService, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, WalletService walletService, PlayerService playerService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.walletService = walletService;
+        this.playerService = playerService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -36,6 +33,7 @@ public class UserService {
 
         if(!validate(newUser.getUsername())){
             Wallet newWallet = walletService.createWallet();
+            Player player = playerService.createPlayer();
             User user = new User(
                     newUser.getId(),
                     newUser.getUsername(),
@@ -44,7 +42,8 @@ public class UserService {
                     newUser.getMiddleName(),
                     newUser.getLastName(),
                     newUser.getAddress(),
-                    newWallet
+                    newWallet,
+                    player
             );
 
             userRepository.save(user);
@@ -81,8 +80,7 @@ public class UserService {
 
     public boolean validate(String username){
     boolean isValid;
-        if (userRepository.findByUsername(username) != null) isValid = true;
-        else isValid = false;
+        isValid = userRepository.findByUsername(username) != null;
 
         return isValid;
     }
